@@ -10,7 +10,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-      origin: "https://chat-socket-server-omega.vercel.app/", // Web Test 
+      origin: "*", // Web Test 
       methods: ["GET", "POST"],
       transports: ['websocket', 'polling'],
       credentials: true,
