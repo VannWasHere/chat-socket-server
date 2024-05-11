@@ -188,24 +188,18 @@ $(function() {
     updateTyping();
   });
 
-  // Click events
-
-  // Focus input when clicking anywhere on login page
   $loginPage.click(() => {
     $currentInput.focus();
   });
 
-  // Focus input when clicking on the message input's border
   $inputMessage.click(() => {
     $inputMessage.focus();
   });
 
   // Socket events
-
   // Whenever the server emits 'login', log the login message
   socket.on('login', (data) => {
     connected = true;
-    // Display the welcome message
     const message = 'Welcome to Socket.IO Chat – ';
     log(message, {
       prepend: true
