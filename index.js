@@ -19,7 +19,7 @@ const io = new Server(server, {
 });
 const port = process.env.PORT || 3000;
 
-server.listen(port, '0.0.0.0', () => {
+server.listen(port, '192.168.18.4', () => {
     console.log(`Server listening at port ${port}...`);
 });
 
