@@ -15,7 +15,7 @@ $(function() {
   const $loginPage = $('.login.page');        // The login page
   const $chatPage = $('.chat.page');          // The chatroom page
 
-  const socket = io();
+  const socket = io("https://chat-socket-server-omega.vercel.app");
 
   // Prompt for setting a username
   let username;
