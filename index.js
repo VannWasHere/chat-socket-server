@@ -1,18 +1,27 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
+import path from 'path';
+import cors from 'cors';
 
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+      origin: "http://192.168.18.4:5500", //Web Test 
+      methods: ["GET", "POST"]
+    }
+});
 const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
-    console.log(`Server listening at port ${port}...`)
-})
+    console.log(`Server listening at port ${port}...`);
+});
 
-app.use(express);
+app.use(cors());
+app.use(express.static(path.join(__dirname, '/public')));
 
 let numUsers = 0;
 
@@ -20,39 +29,39 @@ io.on('connection', (socket) => {
     let addedUser = false;
 
     // Add messages
-    socket.on('New Messsage', (data) => {
-        socket.broadcast.emit('New Messsage', {
+    socket.on('new message', (data) => {
+        socket.broadcast.emit('new message', {
             username: socket.username,
             message: data
         })
     })
     
     // User Join (?)
-    socket.on('Add User', (username) => {
+    socket.on('add user', (username) => {
         if(addedUser) return;
 
         socket.username = username
         ++numUsers
         addedUser = true
-        socket.emit('Login', {
+        socket.emit('login', {
             numUsers: numUsers
         })
     })
 
     // Notify New User Join
-    socket.broadcast.emit('User Joined', {
+    socket.broadcast.emit('user joined', {
         username: socket.username,
         numUsers: numUsers
     })
 
-    socket.on('Typing', () => {
-        socket.broadcast.emit('Typing', {
+    socket.on('typing', () => {
+        socket.broadcast.emit('typing', {
             username: socket.username
         })
     })
 
-    socket.on('Stop Typing', () => {
-        socket.broadcast.emit('Stop Typing', {
+    socket.on('stop typing', () => {
+        socket.broadcast.emit('stop typing', {
             username: socket.username
         })
     })
@@ -61,7 +70,7 @@ io.on('connection', (socket) => {
         if(addedUser) {
             --numUsers
 
-            socket.broadcast.emit('User Left', {
+            socket.broadcast.emit('user left', {
                 username: socket.username,
                 numUsers: numUsers
             })
