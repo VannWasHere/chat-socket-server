@@ -6,18 +6,16 @@ $(function() {
     '#58dc00', '#287b00', '#a8f07a', '#4ae8c4',
     '#3b88eb', '#3824aa', '#a700ff', '#d300e7'
   ];
-  // Initialize variables
   const $window = $(window);
-  const $usernameInput = $('.usernameInput'); // Input for username
-  const $messages = $('.messages');           // Messages area
-  const $inputMessage = $('.inputMessage');   // Input message input box
+  const $usernameInput = $('.usernameInput');
+  const $messages = $('.messages');   
+  const $inputMessage = $('.inputMessage');  
 
-  const $loginPage = $('.login.page');        // The login page
-  const $chatPage = $('.chat.page');          // The chatroom page
+  const $loginPage = $('.login.page');    
+  const $chatPage = $('.chat.page');      
 
   const socket = io("192.168.18.4:1350");
 
-  // Prompt for setting a username
   let username;
   let connected = false;
   let typing = false;
@@ -53,13 +51,10 @@ $(function() {
   // Sends a chat message
   const sendMessage = () => {
     let message = $inputMessage.val();
-    // Prevent markup from being injected into the message
     message = cleanInput(message);
-    // if there is a non-empty message and a socket connection
     if (message && connected) {
       $inputMessage.val('');
       addChatMessage({ username, message });
-      // tell server to execute 'new message' and send along one parameter
       socket.emit('new message', message);
     }
   }
@@ -70,9 +65,7 @@ $(function() {
     addMessageElement($el, options);
   }
 
-  // Adds the visual chat message to the message list
   const addChatMessage = (data, options = {}) => {
-    // Don't fade the message in if there is an 'X was typing'
     const $typingMessages = getTypingMessages(data);
     if ($typingMessages.length !== 0) {
       options.fade = false;
@@ -94,25 +87,18 @@ $(function() {
     addMessageElement($messageDiv, options);
   }
 
-  // Adds the visual chat typing message
   const addChatTyping = (data) => {
     data.typing = true;
     data.message = 'is typing';
     addChatMessage(data);
   }
 
-  // Removes the visual chat typing message
   const removeChatTyping = (data) => {
     getTypingMessages(data).fadeOut(function () {
       $(this).remove();
     });
   }
 
-  // Adds a message element to the messages and scrolls to the bottom
-  // el - The element to add as a message
-  // options.fade - If the element should fade-in (default = true)
-  // options.prepend - If the element should prepend
-  //   all other messages (default = false)
   const addMessageElement = (el, options) => {
     const $el = $(el);
     // Setup default options
@@ -173,7 +159,6 @@ $(function() {
 
   // Gets the color of a username through our hash function
   const getUsernameColor = (username) => {
-    // Compute hash code
     let hash = 7;
     for (let i = 0; i < username.length; i++) {
       hash = username.charCodeAt(i) + (hash << 5) - hash;
@@ -184,13 +169,10 @@ $(function() {
   }
 
   // Keyboard events
-
   $window.keydown(event => {
-    // Auto-focus the current input when a key is typed
     if (!(event.ctrlKey || event.metaKey || event.altKey)) {
       $currentInput.focus();
     }
-    // When the client hits ENTER on their keyboard
     if (event.which === 13) {
       if (username) {
         sendMessage();
