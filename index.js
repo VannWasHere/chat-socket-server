@@ -10,13 +10,13 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-      origin: "http://192.168.18.4:5500", //Web Test 
+      origin: "http://192.168.18.4:5500", // Web Test 
       methods: ["GET", "POST"]
     }
 });
 const port = process.env.PORT || 3000;
 
-server.listen(port, () => {
+server.listen(port, '0.0.0.0', () => {
     console.log(`Server listening at port ${port}...`);
 });
 
@@ -30,6 +30,7 @@ io.on('connection', (socket) => {
 
     // Add messages
     socket.on('new message', (data) => {
+        console.log(`New message added from ${socket.username}: ${data}`)
         socket.broadcast.emit('new message', {
             username: socket.username,
             message: data
@@ -43,6 +44,7 @@ io.on('connection', (socket) => {
         socket.username = username
         ++numUsers
         addedUser = true
+        console.log(`${socket.username} join the chat!`)
         socket.emit('login', {
             numUsers: numUsers
         })
@@ -69,7 +71,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         if(addedUser) {
             --numUsers
-
+            console.log(`${socket.username} left the chat!`)
             socket.broadcast.emit('user left', {
                 username: socket.username,
                 numUsers: numUsers
