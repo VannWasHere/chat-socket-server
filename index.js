@@ -10,7 +10,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-      origin: "*", // Web Test 
+      origin: "*", // Allow All Source 
       methods: ["GET", "POST"],
       transports: ['websocket', 'polling'],
       credentials: true,
