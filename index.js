@@ -11,8 +11,11 @@ const server = createServer(app);
 const io = new Server(server, {
     cors: {
       origin: "https://chat-socket-server-omega.vercel.app/", // Web Test 
-      methods: ["GET", "POST"]
-    }
+      methods: ["GET", "POST"],
+      transports: ['websocket', 'polling'],
+      credentials: true,
+    },
+    allowEIO3: true
 });
 const port = process.env.PORT || 3000;
 
